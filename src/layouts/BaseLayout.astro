@@ -1,0 +1,37 @@
+---
+import '../styles/global.css';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import CartPanel from '../islands/CartPanel';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'LanaNegra — Amigurumis artesanales',
+  description = 'Compañeros suaves para momentos inolvidables. Amigurumis tejidos a mano con amor.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+
+    <!-- Cart panel lives here so it's available on every page -->
+    <CartPanel client:load />
+  </body>
+</html>

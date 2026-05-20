@@ -1,0 +1,202 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProductCard from '../components/product/ProductCard.astro';
+import { products } from '../data/products';
+import type { Step, Review } from '../types/product';
+
+const steps: Step[] = [
+  { icon: '🧶', label: 'Elige', description: 'Escoge tu amigurumi favorito o pide uno personalizado' },
+  { icon: '🪡', label: 'Tejemos', description: 'Lo hacemos a mano con hilo suave y mucho amor' },
+  { icon: '✅', label: 'Confirmamos', description: 'Te enviamos fotos antes del despacho para tu aprobación' },
+  { icon: '📦', label: 'Recibes', description: 'Llega empaquetado con cariño directo a tu puerta' },
+];
+
+const reviews: Review[] = [
+  {
+    author: 'Valentina R.',
+    rating: 5,
+    text: 'El osito que pedí para mi hija es simplemente perfecto. La calidad del tejido es increíble y llegó súper bien empaquetado. ¡Lo amaremos para siempre!',
+    date: 'Abril 2026',
+  },
+  {
+    author: 'María José T.',
+    rating: 5,
+    text: 'Pedí un amigurumi personalizado del perrito de mi hermana y quedó idéntico. El proceso fue muy fácil y la comunicación excelente. 100% recomendado.',
+    date: 'Marzo 2026',
+  },
+  {
+    author: 'Camila S.',
+    rating: 5,
+    text: 'Son tan suaves y detallados que da ternura hasta mirarlos. Ya le compré a toda mi familia uno diferente. ¡Son adicción pura!',
+    date: 'Mayo 2026',
+  },
+];
+
+const categories = ['Todos', 'Amigurumis', 'Muñecos', 'Con Ropa'];
+---
+
+<BaseLayout>
+
+  <!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
+  <section style="background:linear-gradient(135deg, #fdf9f0 60%, #f0f7f4 100%); overflow:hidden;" class="relative">
+    <!-- Blob decorativo -->
+    <div
+      class="absolute -top-20 -right-20 opacity-30 pointer-events-none"
+      style="width:500px; height:500px; border-radius:9999px; background:radial-gradient(circle, #bde9da 0%, transparent 70%);"
+    ></div>
+    <div
+      class="absolute bottom-0 left-0 opacity-20 pointer-events-none"
+      style="width:300px; height:300px; border-radius:9999px; background:radial-gradient(circle, #ffd8e6 0%, transparent 70%);"
+    ></div>
+
+    <div class="max-w-6xl mx-auto px-6 py-20 md:py-28 grid md:grid-cols-2 gap-12 items-center relative z-10">
+      <!-- Texto -->
+      <div>
+        <span class="chip chip-active mb-6 inline-flex" style="background:#bde9da; color:#254e43; border:none;">
+          ✿ Tejidos a mano
+        </span>
+        <h1 class="font-700 mb-6" style="font-size:clamp(2rem,5vw,3rem); line-height:1.15; color:#1c1c17; letter-spacing:-0.02em;">
+          Compañeros suaves para momentos
+          <span style="color:#824f66;"> inolvidables</span>
+        </h1>
+        <p class="mb-8 leading-relaxed" style="font-size:1.1rem; color:#504348; max-width:440px;">
+          Cada amigurumi nace de horas de dedicación, hilo suave y mucho amor artesanal. El compañero perfecto para cada historia.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a href="#catalogo" class="btn-primary">Ver Catálogo</a>
+          <a href="#personaliza" class="btn-outline">Personalizar</a>
+        </div>
+      </div>
+
+      <!-- Imagen hero -->
+      <div class="relative flex justify-center">
+        <div
+          class="relative flex items-center justify-center"
+          style="width:420px; height:420px; border-radius:40% 60% 55% 45% / 45% 55% 60% 40%; background:linear-gradient(135deg, #ffd8e6 0%, #bde9da 100%); max-width:100%;"
+        >
+          <img
+            src="https://placehold.co/360x360/fdf9f0/824f66?text=🧸"
+            alt="Amigurumis artesanales LanaNegra"
+            class="object-contain"
+            style="width:320px; height:320px; filter:drop-shadow(0 16px 40px rgba(130,79,102,0.18));"
+          />
+        </div>
+        <!-- Floating badge -->
+        <div
+          class="absolute bottom-6 left-0 review-card flex items-center gap-3"
+          style="padding:0.75rem 1.25rem; min-width:180px;"
+        >
+          <span style="font-size:1.5rem;">⭐</span>
+          <div>
+            <p class="font-700 text-sm" style="color:#1c1c17;">4.9 / 5.0</p>
+            <p class="text-xs" style="color:#827378;">+200 reseñas</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ CATEGORÍAS + CATÁLOGO ══════════════════════════ -->
+  <section id="catalogo" class="max-w-6xl mx-auto px-6 py-20">
+    <!-- Título -->
+    <div class="text-center mb-10">
+      <h2 class="section-title mb-3">Nuestros Amigurumis</h2>
+      <div class="divider-dots"><span></span><span></span><span></span></div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="flex flex-wrap gap-3 justify-center mb-10">
+      {categories.map((cat, i) => (
+        <button class={`chip ${i === 0 ? 'chip-active' : 'chip-inactive'}`}>
+          {cat}
+        </button>
+      ))}
+    </div>
+
+    <!-- Grid de productos -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      {products.map(product => (
+        <ProductCard product={product} />
+      ))}
+    </div>
+
+    <div class="text-center mt-10">
+      <a href="#" class="btn-outline">Ver todos los productos</a>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ PASOS ══════════════════════════ -->
+  <section class="py-20" style="background:#f1eee5;">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-14">
+        <h2 class="section-title mb-3">Tejido paso a paso</h2>
+        <div class="divider-dots"><span></span><span></span><span></span></div>
+        <p class="mt-3 text-base" style="color:#504348;">Así es como tu amigurumi llega a tus manos</p>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+        {steps.map((step, i) => (
+          <div class="flex flex-col items-center text-center gap-3 relative">
+            {i < steps.length - 1 && (
+              <div
+                class="hidden md:block absolute top-9 left-1/2 w-full h-px"
+                style="background: repeating-linear-gradient(90deg, #f5b4cf 0, #f5b4cf 6px, transparent 6px, transparent 14px); z-index:0;"
+              ></div>
+            )}
+            <div class="step-icon relative z-10">{step.icon}</div>
+            <h3 class="font-700 text-base" style="color:#1c1c17;">{step.label}</h3>
+            <p class="text-sm leading-relaxed" style="color:#504348; max-width:160px;">{step.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ TESTIMONIOS ══════════════════════════ -->
+  <section class="max-w-6xl mx-auto px-6 py-20">
+    <div class="text-center mb-12">
+      <h2 class="section-title mb-3">Historias Suaves</h2>
+      <div class="divider-dots"><span></span><span></span><span></span></div>
+      <p class="mt-3 text-base" style="color:#504348;">Lo que dicen quienes ya tienen su compañero</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {reviews.map(review => (
+        <article class="review-card">
+          <div class="flex gap-1 mb-3">
+            {Array.from({ length: review.rating }).map(() => (
+              <span style="color:#824f66; font-size:1rem;">★</span>
+            ))}
+          </div>
+          <p class="text-sm leading-relaxed mb-4" style="color:#504348;">"{review.text}"</p>
+          <div class="flex items-center justify-between">
+            <span class="font-700 text-sm" style="color:#1c1c17;">{review.author}</span>
+            <span class="text-xs" style="color:#827378;">{review.date}</span>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ CTA FINAL ══════════════════════════ -->
+  <section class="py-20 px-6" style="background:linear-gradient(135deg, #824f66 0%, #635979 100%);">
+    <div class="max-w-2xl mx-auto text-center">
+      <p class="text-sm font-600 mb-3 tracking-widest uppercase" style="color:#f5b4cf;">¿Algo especial en mente?</p>
+      <h2 class="font-700 mb-4" style="font-size:2rem; color:#ffffff; line-height:1.2;">
+        Crea tu amigurumi personalizado
+      </h2>
+      <p class="mb-8 leading-relaxed" style="color:rgba(255,255,255,0.75);">
+        Cuéntanos la idea, el nombre, los colores favoritos. Tejemos el compañero perfecto solo para ti.
+      </p>
+      <a
+        id="personaliza"
+        href="mailto:hola@lananegra.com"
+        class="inline-block font-700 rounded-full px-8 py-4 transition-transform hover:scale-105"
+        style="background:#ffd8e6; color:#744259; box-shadow:0 4px 0 0 rgba(0,0,0,0.15);"
+      >
+        Escribirnos ✿
+      </a>
+    </div>
+  </section>
+
+</BaseLayout>
