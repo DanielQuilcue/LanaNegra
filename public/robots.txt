@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://lananegra.com/sitemap-index.xml

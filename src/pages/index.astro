@@ -4,11 +4,11 @@ import ProductCard from '../components/product/ProductCard.astro';
 import { products } from '../data/products';
 import type { Step, Review } from '../types/product';
 
-const steps: Step[] = [
-  { icon: '🧶', label: 'Elige', description: 'Escoge tu amigurumi favorito o pide uno personalizado' },
-  { icon: '🪡', label: 'Tejemos', description: 'Lo hacemos a mano con hilo suave y mucho amor' },
-  { icon: '✅', label: 'Confirmamos', description: 'Te enviamos fotos antes del despacho para tu aprobación' },
-  { icon: '📦', label: 'Recibes', description: 'Llega empaquetado con cariño directo a tu puerta' },
+const steps: (Step & { icon: string; iconVariant: string })[] = [
+  { icon: 'inventory_2', iconVariant: 'step-icon-primary-dim', label: 'Elige', description: 'Escoge tu amigurumi favorito o pide uno personalizado' },
+  { icon: 'handyman', iconVariant: 'step-icon-secondary', label: 'Tejemos', description: 'Lo hacemos a mano con hilo suave y mucho amor' },
+  { icon: 'verified', iconVariant: 'step-icon-tertiary', label: 'Confirmamos', description: 'Te enviamos fotos antes del despacho para tu aprobación' },
+  { icon: 'local_shipping', iconVariant: '', label: 'Recibes', description: 'Llega empaquetado con cariño directo a tu puerta' },
 ];
 
 const reviews: Review[] = [
@@ -32,120 +32,104 @@ const reviews: Review[] = [
   },
 ];
 
-const categories = ['Todos', 'Amigurumis', 'Muñecos', 'Con Ropa'];
+const categories = ['Todos', 'Animales', 'Navidad', 'Anime', 'Superhéroes', 'Caricatura', 'Creaciones Propias', 'Decoración'];
 ---
 
 <BaseLayout>
 
   <!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
-  <section style="background:linear-gradient(135deg, #fdf9f0 60%, #f0f7f4 100%); overflow:hidden;" class="relative">
-    <!-- Blob decorativo -->
-    <div
-      class="absolute -top-20 -right-20 opacity-30 pointer-events-none"
-      style="width:500px; height:500px; border-radius:9999px; background:radial-gradient(circle, #bde9da 0%, transparent 70%);"
-    ></div>
-    <div
-      class="absolute bottom-0 left-0 opacity-20 pointer-events-none"
-      style="width:300px; height:300px; border-radius:9999px; background:radial-gradient(circle, #ffd8e6 0%, transparent 70%);"
-    ></div>
-
-    <div class="max-w-6xl mx-auto px-6 py-20 md:py-28 grid md:grid-cols-2 gap-12 items-center relative z-10">
+  <section class="relative pt-8 pb-20 md:pb-28 overflow-hidden">
+    <div class="max-w-[1400px] mx-auto px-6 grid md:grid-cols-2 gap-12 items-center relative z-10">
       <!-- Texto -->
       <div>
-        <span class="chip chip-active mb-6 inline-flex" style="background:#bde9da; color:#254e43; border:none;">
-          ✿ Tejidos a mano
+        <span class="hero-item chip chip-active mb-6 inline-flex" style="background:#c7e7db; color:#254e43; border:none;">
+          <span class="material-symbols-outlined filled" style="font-size:16px;">stars</span>
+          Tejidos a mano
         </span>
-        <h1 class="font-700 mb-6" style="font-size:clamp(2rem,5vw,3rem); line-height:1.15; color:#1c1c17; letter-spacing:-0.02em;">
+        <h1 class="hero-item mb-6" style="font-family:'Plus Jakarta Sans', sans-serif; font-weight:800; font-size:clamp(2rem,5vw,3rem); line-height:1.15; color:#1c1c17; letter-spacing:-0.02em;">
           Compañeros suaves para momentos
-          <span style="color:#824f66;"> inolvidables</span>
+          <span style="color:#8b5e6b; font-style:italic;"> inolvidables</span>
         </h1>
-        <p class="mb-8 leading-relaxed" style="font-size:1.1rem; color:#504348; max-width:440px;">
+        <p class="hero-item mb-8 leading-relaxed" style="font-size:1.1rem; color:#504446; max-width:440px;">
           Cada amigurumi nace de horas de dedicación, hilo suave y mucho amor artesanal. El compañero perfecto para cada historia.
         </p>
-        <div class="flex flex-wrap gap-4">
+        <div class="hero-item flex flex-wrap gap-4">
           <a href="#catalogo" class="btn-primary">Ver Catálogo</a>
           <a href="#personaliza" class="btn-outline">Personalizar</a>
         </div>
       </div>
 
       <!-- Imagen hero -->
-      <div class="relative flex justify-center">
-        <div
-          class="relative flex items-center justify-center"
-          style="width:420px; height:420px; border-radius:40% 60% 55% 45% / 45% 55% 60% 40%; background:linear-gradient(135deg, #ffd8e6 0%, #bde9da 100%); max-width:100%;"
-        >
+      <div class="relative flex justify-center items-center">
+        <!-- Blobs decorativos animados (fondo que se mueve solo) -->
+        <div class="absolute blob-bg" style="width:420px; height:420px; background:rgba(199,231,219,0.45); --blob-rot:-12deg; transform:translate(10px,10px) rotate(-12deg);"></div>
+        <div class="absolute blob-bg" style="width:360px; height:360px; background:rgba(139,94,107,0.2); --blob-rot:45deg; transform:translate(-10px,-10px) rotate(45deg); animation-delay:-6s;"></div>
+
+        <div id="hero-image" class="hero-item relative z-10 w-full max-w-md aspect-square rounded-[3rem] overflow-hidden card-shadow">
           <img
-            src="https://placehold.co/360x360/fdf9f0/824f66?text=🧸"
-            alt="Amigurumis artesanales LanaNegra"
-            class="object-contain"
-            style="width:320px; height:320px; filter:drop-shadow(0 16px 40px rgba(130,79,102,0.18));"
+            src="/images/Hero/Rata.2.jpg"
+            alt="Amigurumi tejido a mano — LanaNegra"
+            class="w-full h-full object-cover"
           />
-        </div>
-        <!-- Floating badge -->
-        <div
-          class="absolute bottom-6 left-0 review-card flex items-center gap-3"
-          style="padding:0.75rem 1.25rem; min-width:180px;"
-        >
-          <span style="font-size:1.5rem;">⭐</span>
-          <div>
-            <p class="font-700 text-sm" style="color:#1c1c17;">4.9 / 5.0</p>
-            <p class="text-xs" style="color:#827378;">+200 reseñas</p>
-          </div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- ══════════════════════════ CATEGORÍAS + CATÁLOGO ══════════════════════════ -->
-  <section id="catalogo" class="max-w-6xl mx-auto px-6 py-20">
+  <section id="catalogo" class="max-w-[1400px] mx-auto px-6 py-20">
     <!-- Título -->
     <div class="text-center mb-10">
       <h2 class="section-title mb-3">Nuestros Amigurumis</h2>
       <div class="divider-dots"><span></span><span></span><span></span></div>
     </div>
 
-    <!-- Filtros -->
-    <div class="flex flex-wrap gap-3 justify-center mb-10">
+    <!-- Filtros: scroll horizontal en móvil, wrap centrado en desktop -->
+    <div id="category-filters" class="flex flex-nowrap md:flex-wrap overflow-x-auto md:overflow-visible no-scrollbar gap-3 md:justify-center mb-10 -mx-6 px-6 md:mx-0 md:px-0">
       {categories.map((cat, i) => (
-        <button class={`chip ${i === 0 ? 'chip-active' : 'chip-inactive'}`}>
+        <button
+          type="button"
+          class={`chip shrink-0 stagger-item ${i === 0 ? 'chip-active' : 'chip-inactive'}`}
+          style={`--i: ${i}`}
+          data-category={cat}
+        >
           {cat}
         </button>
       ))}
     </div>
 
     <!-- Grid de productos -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-      {products.map(product => (
-        <ProductCard product={product} />
+    <div id="catalogo-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+      {products.map((product, i) => (
+        <div class="catalog-item stagger-item" style={`--i: ${i}`} data-category={product.category}>
+          <ProductCard product={product} />
+        </div>
       ))}
     </div>
 
-    <div class="text-center mt-10">
-      <a href="#" class="btn-outline">Ver todos los productos</a>
-    </div>
+    <p id="catalogo-empty" class="text-center mt-10 hidden" style="color:#827376;">
+      No hay productos en esta categoría todavía.
+    </p>
   </section>
 
   <!-- ══════════════════════════ PASOS ══════════════════════════ -->
   <section class="py-20" style="background:#f1eee5;">
-    <div class="max-w-6xl mx-auto px-6">
+    <div class="max-w-[1400px] mx-auto px-6">
       <div class="text-center mb-14">
         <h2 class="section-title mb-3">Tejido paso a paso</h2>
         <div class="divider-dots"><span></span><span></span><span></span></div>
-        <p class="mt-3 text-base" style="color:#504348;">Así es como tu amigurumi llega a tus manos</p>
+        <p class="mt-3 text-base" style="color:#504446;">Así es como tu amigurumi llega a tus manos</p>
       </div>
 
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-        {steps.map((step, i) => (
-          <div class="flex flex-col items-center text-center gap-3 relative">
-            {i < steps.length - 1 && (
-              <div
-                class="hidden md:block absolute top-9 left-1/2 w-full h-px"
-                style="background: repeating-linear-gradient(90deg, #f5b4cf 0, #f5b4cf 6px, transparent 6px, transparent 14px); z-index:0;"
-              ></div>
-            )}
-            <div class="step-icon relative z-10">{step.icon}</div>
-            <h3 class="font-700 text-base" style="color:#1c1c17;">{step.label}</h3>
-            <p class="text-sm leading-relaxed" style="color:#504348; max-width:160px;">{step.description}</p>
+      <div id="pasos-track" class="relative grid grid-cols-2 md:grid-cols-4 gap-8 px-4">
+        <div id="pasos-line" class="hidden md:block dashed-line" style="position:absolute; top:2.5rem; left:15%; right:15%; height:1px; z-index:0; transform-origin:left; transform:scaleX(0);"></div>
+        {steps.map(step => (
+          <div class="motion-item relative z-10 flex flex-col items-center text-center gap-3">
+            <div class={`step-icon motion-float ${step.iconVariant}`}>
+              <span class="material-symbols-outlined" style="font-size:2rem;">{step.icon}</span>
+            </div>
+            <h3 style="font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:1rem; color:#1c1c17;">{step.label}</h3>
+            <p class="text-sm leading-relaxed" style="color:#504446; max-width:160px;">{step.description}</p>
           </div>
         ))}
       </div>
@@ -153,25 +137,25 @@ const categories = ['Todos', 'Amigurumis', 'Muñecos', 'Con Ropa'];
   </section>
 
   <!-- ══════════════════════════ TESTIMONIOS ══════════════════════════ -->
-  <section class="max-w-6xl mx-auto px-6 py-20">
+  <section class="max-w-[1400px] mx-auto px-6 py-20">
     <div class="text-center mb-12">
       <h2 class="section-title mb-3">Historias Suaves</h2>
       <div class="divider-dots"><span></span><span></span><span></span></div>
-      <p class="mt-3 text-base" style="color:#504348;">Lo que dicen quienes ya tienen su compañero</p>
+      <p class="mt-3 text-base" style="color:#504446;">Lo que dicen quienes ya tienen su compañero</p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div id="testimonios-track" class="grid grid-cols-1 md:grid-cols-3 gap-6">
       {reviews.map(review => (
-        <article class="review-card">
+        <article class="review-card motion-item">
           <div class="flex gap-1 mb-3">
             {Array.from({ length: review.rating }).map(() => (
-              <span style="color:#824f66; font-size:1rem;">★</span>
+              <span class="material-symbols-outlined filled motion-star" style="color:#704653; font-size:1.1rem;">star</span>
             ))}
           </div>
-          <p class="text-sm leading-relaxed mb-4" style="color:#504348;">"{review.text}"</p>
+          <p class="text-sm leading-relaxed mb-4" style="color:#504446; font-style:italic;">"{review.text}"</p>
           <div class="flex items-center justify-between">
-            <span class="font-700 text-sm" style="color:#1c1c17;">{review.author}</span>
-            <span class="text-xs" style="color:#827378;">{review.date}</span>
+            <span style="font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:0.875rem; color:#1c1c17;">{review.author}</span>
+            <span class="text-xs" style="color:#827376;">{review.date}</span>
           </div>
         </article>
       ))}
@@ -179,24 +163,171 @@ const categories = ['Todos', 'Amigurumis', 'Muñecos', 'Con Ropa'];
   </section>
 
   <!-- ══════════════════════════ CTA FINAL ══════════════════════════ -->
-  <section class="py-20 px-6" style="background:linear-gradient(135deg, #824f66 0%, #635979 100%);">
-    <div class="max-w-2xl mx-auto text-center">
-      <p class="text-sm font-600 mb-3 tracking-widest uppercase" style="color:#f5b4cf;">¿Algo especial en mente?</p>
-      <h2 class="font-700 mb-4" style="font-size:2rem; color:#ffffff; line-height:1.2;">
-        Crea tu amigurumi personalizado
-      </h2>
-      <p class="mb-8 leading-relaxed" style="color:rgba(255,255,255,0.75);">
-        Cuéntanos la idea, el nombre, los colores favoritos. Tejemos el compañero perfecto solo para ti.
-      </p>
-      <a
-        id="personaliza"
-        href="mailto:hola@lananegra.com"
-        class="inline-block font-700 rounded-full px-8 py-4 transition-transform hover:scale-105"
-        style="background:#ffd8e6; color:#744259; box-shadow:0 4px 0 0 rgba(0,0,0,0.15);"
-      >
-        Escribirnos ✿
-      </a>
+  <section class="px-6 py-20">
+    <div id="cta-card" class="max-w-4xl mx-auto rounded-[3rem] overflow-hidden relative text-center p-12 md:p-16" style="background:linear-gradient(135deg, #8b5e6b 0%, #535066 100%);">
+      <div class="motion-drift absolute top-0 right-0 w-64 h-64 rounded-full pointer-events-none" style="background:rgba(255,255,255,0.1); filter:blur(48px); margin-right:-8rem; margin-top:-8rem;"></div>
+      <div class="motion-drift absolute bottom-0 left-0 w-80 h-80 rounded-full pointer-events-none" style="background:rgba(0,0,0,0.1); filter:blur(48px); margin-left:-10rem; margin-bottom:-10rem; animation-delay:-4s;"></div>
+
+      <div class="relative z-10">
+        <p class="text-sm font-600 mb-3 tracking-widest uppercase" style="color:#ffd9e2; font-weight:600;">¿Algo especial en mente?</p>
+        <h2 class="mb-4" style="font-family:'Plus Jakarta Sans', sans-serif; font-weight:800; font-size:2rem; color:#ffffff; line-height:1.2;">
+          Crea tu amigurumi personalizado
+        </h2>
+        <p class="mb-8 leading-relaxed" style="color:rgba(255,255,255,0.85); max-width:32rem; margin-left:auto; margin-right:auto;">
+          Cuéntanos la idea, el nombre, los colores favoritos. Tejemos el compañero perfecto solo para ti.
+        </p>
+        <a
+          id="personaliza"
+          href="mailto:hola@lananegra.com"
+          class="cta-btn inline-flex items-center gap-2 font-700 rounded-full px-8 py-4"
+          style="background:#ffe6eb; color:#704653; font-weight:700; box-shadow:0 8px 30px rgba(0,0,0,0.2);"
+        >
+          Escribirnos
+          <span class="material-symbols-outlined" style="font-size:20px;">send</span>
+        </a>
+      </div>
     </div>
   </section>
 
 </BaseLayout>
+
+<script>
+  const filterButtons = document.querySelectorAll<HTMLButtonElement>('#category-filters button');
+  const items = document.querySelectorAll<HTMLElement>('#catalogo-grid .catalog-item');
+  const emptyMsg = document.getElementById('catalogo-empty');
+
+  filterButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const category = btn.dataset.category ?? 'Todos';
+
+      filterButtons.forEach(b => {
+        b.classList.toggle('chip-active', b === btn);
+        b.classList.toggle('chip-inactive', b !== btn);
+      });
+
+      let visibleCount = 0;
+      items.forEach(item => {
+        const show = category === 'Todos' || item.dataset.category === category;
+        item.style.display = show ? '' : 'none';
+        if (show) visibleCount++;
+      });
+
+      emptyMsg?.classList.toggle('hidden', visibleCount > 0);
+    });
+  });
+
+  /* ── Entrada escalonada de categorías + tarjetas ─────── */
+  const catalogSection = document.getElementById('catalogo');
+  if (catalogSection) {
+    const catalogObserver = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            catalogObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+    catalogObserver.observe(catalogSection);
+  }
+</script>
+
+<script>
+  import { animate, inView, stagger } from 'framer-motion';
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const easeOut = [0.16, 1, 0.3, 1] as const;
+
+  if (prefersReducedMotion) {
+    // Sin animación: solo asegurar que todo sea visible.
+    document.querySelectorAll<HTMLElement>('.motion-item, .hero-item').forEach(el => { el.style.opacity = '1'; });
+  } else {
+    /* ── Hero: entrada al cargar la página (texto en cascada + imagen) ── */
+    const heroTextItems = document.querySelectorAll<HTMLElement>('.hero-item:not(#hero-image)');
+    animate(
+      heroTextItems,
+      { opacity: [0, 1], y: [22, 0] },
+      { delay: stagger(0.1), duration: 0.6, ease: easeOut }
+    );
+
+    const heroImage = document.getElementById('hero-image');
+    if (heroImage) {
+      animate(
+        heroImage,
+        { opacity: [0, 1], scale: [0.92, 1] },
+        { duration: 0.7, ease: easeOut, delay: 0.15 }
+      );
+    }
+
+    /* ── Pasos: entrada en cascada + línea que se dibuja + iconos flotando ── */
+    const pasosTrack = document.getElementById('pasos-track');
+    if (pasosTrack) {
+      inView(pasosTrack, () => {
+        const items = pasosTrack.querySelectorAll<HTMLElement>('.motion-item');
+        animate(
+          items,
+          { opacity: [0, 1], y: [28, 0], scale: [0.94, 1] },
+          { delay: stagger(0.12), duration: 0.6, ease: easeOut }
+        );
+
+        const line = document.getElementById('pasos-line');
+        if (line) {
+          animate(line, { scaleX: [0, 1] }, { duration: 0.9, ease: easeOut, delay: 0.1 });
+        }
+
+        // Flotación continua y suave en cada ícono, con un pequeño desfase entre ellos.
+        pasosTrack.querySelectorAll<HTMLElement>('.motion-float').forEach((el, i) => {
+          animate(
+            el,
+            { y: [0, -8, 0] },
+            { duration: 3.2, repeat: Infinity, ease: 'easeInOut', delay: 0.6 + i * 0.25 }
+          );
+        });
+      }, { amount: 0.4 });
+    }
+
+    /* ── Testimonios: tarjetas + estrellas entrando en cascada ── */
+    const testimoniosTrack = document.getElementById('testimonios-track');
+    if (testimoniosTrack) {
+      inView(testimoniosTrack, () => {
+        const cards = testimoniosTrack.querySelectorAll<HTMLElement>('.motion-item');
+        animate(
+          cards,
+          { opacity: [0, 1], y: [30, 0] },
+          { delay: stagger(0.15), duration: 0.55, ease: easeOut }
+        );
+
+        cards.forEach((card, ci) => {
+          const stars = card.querySelectorAll<HTMLElement>('.motion-star');
+          animate(
+            stars,
+            { opacity: [0, 1], scale: [0.5, 1] },
+            { delay: stagger(0.06, { startDelay: ci * 0.15 + 0.2 }), duration: 0.3, ease: easeOut }
+          );
+        });
+      }, { amount: 0.3 });
+    }
+
+    /* ── CTA final: la tarjeta aparece y las formas de fondo derivan solas ── */
+    const ctaCard = document.getElementById('cta-card');
+    if (ctaCard) {
+      inView(ctaCard, () => {
+        animate(
+          ctaCard,
+          { opacity: [0, 1], scale: [0.95, 1] },
+          { duration: 0.6, ease: easeOut }
+        );
+
+        ctaCard.querySelectorAll<HTMLElement>('.motion-drift').forEach((el, i) => {
+          animate(
+            el,
+            { x: [0, 16, -10, 0], y: [0, -14, 10, 0] },
+            { duration: 12 + i * 2, repeat: Infinity, ease: 'easeInOut' }
+          );
+        });
+      }, { amount: 0.3 });
+    }
+  }
+</script>

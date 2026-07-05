@@ -7,12 +7,17 @@ import CartPanel from '../islands/CartPanel';
 interface Props {
   title?: string;
   description?: string;
+  image?: string;
 }
 
 const {
   title = 'LanaNegra — Amigurumis artesanales',
   description = 'Compañeros suaves para momentos inolvidables. Amigurumis tejidos a mano con amor.',
+  image = '/images/Hero/Rata.2.jpg',
 } = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin).href;
+const ogImageURL = new URL(image, Astro.site ?? Astro.url.origin).href;
 ---
 
 <!doctype html>
@@ -21,8 +26,24 @@ const {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="LanaNegra" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageURL} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:locale" content="es_CO" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageURL} />
   </head>
   <body>
     <Header />
@@ -33,5 +54,286 @@ const {
 
     <!-- Cart panel lives here so it's available on every page -->
     <CartPanel client:load />
+
+    <!-- Lightbox: disponible en todas las páginas para ver imágenes en grande -->
+    <div id="lightbox" class="lightbox hidden" role="dialog" aria-modal="true" aria-label="Imagen ampliada">
+      <button type="button" id="lightbox-close" class="lightbox-close" aria-label="Cerrar imagen">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+      <button type="button" id="lightbox-prev" class="lightbox-nav lightbox-prev hidden" aria-label="Imagen anterior">
+        <span class="material-symbols-outlined">chevron_left</span>
+      </button>
+      <div class="lightbox-card">
+        <img id="lightbox-img" src="" alt="" />
+      </div>
+      <button type="button" id="lightbox-next" class="lightbox-nav lightbox-next hidden" aria-label="Imagen siguiente">
+        <span class="material-symbols-outlined">chevron_right</span>
+      </button>
+    </div>
+
+    <!-- Botones flotantes: WhatsApp (siempre) + Ir arriba (al hacer scroll) -->
+    <a
+      href="https://wa.me/573228369024?text=Hola%20LanaNegra!%20%F0%9F%A7%B8%20Quiero%20m%C3%A1s%20informaci%C3%B3n%20sobre%20sus%20amigurumis"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="float-btn float-whatsapp"
+      aria-label="Escríbenos por WhatsApp"
+    >
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/>
+      </svg>
+    </a>
+
+    <button type="button" id="back-to-top" class="float-btn float-top" aria-label="Ir arriba">
+      <span class="material-symbols-outlined">arrow_upward</span>
+    </button>
   </body>
 </html>
+
+<style is:global>
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(28, 28, 23, 0.88);
+    padding: 2rem;
+    animation: lightboxFade 0.2s ease;
+  }
+  .lightbox.hidden { display: none; }
+  .lightbox-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: min(96vw, 1040px);
+    max-height: 92vh;
+    padding: 2.5rem;
+    border-radius: 1.5rem;
+    background: linear-gradient(135deg, #ffd9e2 0%, #f7f3ea 48%, #c9e9de 100%);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  }
+  .lightbox img {
+    max-width: 100%;
+    max-height: 85vh;
+    object-fit: contain;
+    border-radius: 0.75rem;
+  }
+  .lightbox-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 9999px;
+    border: none;
+    background: #ffffff;
+    color: #1c1c17;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s ease;
+  }
+  .lightbox-close:hover { transform: scale(1.08); }
+
+  .lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3rem;
+    height: 3rem;
+    border-radius: 9999px;
+    border: none;
+    background: #ffffff;
+    color: #1c1c17;
+    font-size: 1.75rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    transition: transform 0.15s ease;
+  }
+  .lightbox-nav:hover { transform: translateY(-50%) scale(1.08); }
+  .lightbox-nav.hidden { display: none; }
+  .lightbox-prev { left: 1rem; }
+  .lightbox-next { right: 1rem; }
+
+  .lightbox-trigger {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 9999px;
+    border: none;
+    background: rgba(255, 255, 255, 0.92);
+    color: #704653;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+  .lightbox-trigger:hover { transform: scale(1.08); background: #ffffff; }
+
+  @keyframes lightboxFade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lightbox { animation: none; }
+  }
+
+  /* ── Botones flotantes ───────────────────────────────── */
+  .float-btn {
+    position: fixed;
+    right: 1.5rem;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 9999px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    text-decoration: none;
+    z-index: 40;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    transition: transform 160ms ease-out, opacity 200ms ease-out;
+  }
+  .float-btn:active { transform: scale(0.95); }
+
+  .float-whatsapp {
+    bottom: 1.5rem;
+    background: #47645b;
+    color: #ffffff;
+  }
+  .float-whatsapp:hover { transform: scale(1.06); }
+
+  .float-top {
+    bottom: 5.5rem;
+    background: #ffffff;
+    color: #704653;
+    opacity: 0;
+    transform: translateY(8px) scale(0.95);
+    pointer-events: none;
+  }
+  .float-top.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+  .float-top:hover { transform: translateY(0) scale(1.06); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .float-btn { transition: opacity 150ms ease; }
+    .float-top { transform: none; }
+    .float-top.visible { transform: none; }
+  }
+</style>
+
+<script>
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement | null;
+  const lightboxClose = document.getElementById('lightbox-close');
+  const lightboxPrev = document.getElementById('lightbox-prev');
+  const lightboxNext = document.getElementById('lightbox-next');
+
+  let images: string[] = [];
+  let index = 0;
+  let alt = '';
+
+  function renderCurrent() {
+    if (!lightboxImg) return;
+    lightboxImg.src = images[index] ?? '';
+    lightboxImg.alt = alt;
+    const multiple = images.length > 1;
+    lightboxPrev?.classList.toggle('hidden', !multiple);
+    lightboxNext?.classList.toggle('hidden', !multiple);
+  }
+
+  function openLightbox(imageList: string[], startIndex: number, imgAlt = '') {
+    if (!lightbox || !lightboxImg || imageList.length === 0) return;
+    images = imageList;
+    index = startIndex;
+    alt = imgAlt;
+    renderCurrent();
+    lightbox.classList.remove('hidden');
+  }
+
+  function closeLightbox() {
+    lightbox?.classList.add('hidden');
+    if (lightboxImg) lightboxImg.src = '';
+    images = [];
+  }
+
+  function showNext() {
+    if (images.length < 2) return;
+    index = (index + 1) % images.length;
+    renderCurrent();
+  }
+
+  function showPrev() {
+    if (images.length < 2) return;
+    index = (index - 1 + images.length) % images.length;
+    renderCurrent();
+  }
+
+  document.addEventListener('click', (e) => {
+    const trigger = (e.target as HTMLElement).closest<HTMLElement>('[data-lightbox]');
+    if (!trigger) return;
+    e.preventDefault();
+    e.stopPropagation();
+
+    const list = trigger.dataset.lightboxImages
+      ? (JSON.parse(trigger.dataset.lightboxImages) as string[])
+      : [trigger.dataset.lightbox ?? ''];
+    const startIndex = trigger.dataset.lightboxIndex ? Number(trigger.dataset.lightboxIndex) : 0;
+
+    openLightbox(list, startIndex, trigger.dataset.lightboxAlt ?? '');
+  });
+
+  lightboxClose?.addEventListener('click', closeLightbox);
+  lightboxPrev?.addEventListener('click', (e) => { e.stopPropagation(); showPrev(); });
+  lightboxNext?.addEventListener('click', (e) => { e.stopPropagation(); showNext(); });
+  lightbox?.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox || lightbox.classList.contains('hidden')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowRight') showNext();
+    if (e.key === 'ArrowLeft') showPrev();
+  });
+
+  /* ── Botón "ir arriba": aparece pasado cierto scroll ─── */
+  const backToTop = document.getElementById('back-to-top');
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let ticking = false;
+
+  function updateBackToTop() {
+    backToTop?.classList.toggle('visible', window.scrollY > 480);
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(updateBackToTop);
+  }, { passive: true });
+
+  updateBackToTop();
+
+  backToTop?.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+  });
+</script>

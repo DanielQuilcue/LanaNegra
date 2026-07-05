@@ -1,0 +1,270 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const pilares = [
+  {
+    icon: 'favorite',
+    variant: 'step-icon-primary-dim',
+    title: 'Amor en cada puntada',
+    text: 'No solo tejemos muñecos; ponemos una intención de cariño y ternura en cada movimiento de la aguja.',
+  },
+  {
+    icon: 'workspace_premium',
+    variant: 'step-icon-secondary',
+    title: 'Calidad Artesanal',
+    text: 'Seleccionamos los mejores materiales naturales para asegurar piezas duraderas, seguras y suaves al tacto.',
+  },
+  {
+    icon: 'eco',
+    variant: 'step-icon-tertiary',
+    title: 'Sostenibilidad',
+    text: 'Creemos en el consumo consciente. Reducimos el desperdicio y evitamos el plástico en nuestros empaques.',
+  },
+];
+
+const pasos = [
+  { icon: 'edit_note', label: 'Paso 01', title: 'Diseño', text: 'Esbozamos el alma de cada personaje.' },
+  { icon: 'inventory_2', label: 'Paso 02', title: 'Materiales', text: 'Algodón orgánico y lanas suaves.' },
+  { icon: 'precision_manufacturing', label: 'Paso 03', title: 'Tejido', text: 'Días de trabajo manual y paciencia.' },
+  { icon: 'featured_seasonal_and_gifts', label: 'Paso 04', title: 'Envío', text: 'Directo a su nuevo hogar.' },
+];
+---
+
+<BaseLayout title="Sobre Nosotros — LanaNegra" description="Descubre la historia, los valores y el proceso artesanal detrás de cada amigurumi LanaNegra.">
+
+  <!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
+  <section class="relative overflow-hidden">
+    <div class="absolute blob-bg" style="width:520px; height:520px; right:-10%; top:-10%; background:rgba(139,94,107,0.12); --blob-rot:0deg;"></div>
+
+    <div class="max-w-[1400px] mx-auto px-6 py-20 md:py-28 grid md:grid-cols-2 gap-12 items-center relative z-10">
+      <div>
+        <h1 class="hero-item mb-6" style="font-family:'Plus Jakarta Sans', sans-serif; font-weight:800; font-size:clamp(2rem,5vw,3rem); line-height:1.15; color:#704653; letter-spacing:-0.02em;">
+          Nuestra Historia
+        </h1>
+        <p class="hero-item leading-relaxed" style="font-size:1.1rem; color:#504446; max-width:32rem;">
+          Descubre la magia de los juguetes hechos a mano, donde cada puntada cuenta un relato de paciencia, ternura y tradición.
+        </p>
+        <div class="hero-item mt-10">
+          <a href="#origen" class="btn-primary">Conoce más</a>
+        </div>
+      </div>
+
+      <div class="relative">
+        <div id="hero-image" class="hero-item rounded-2xl overflow-hidden card-shadow" style="aspect-ratio: 4/5; transform: rotate(1.5deg);">
+          <img
+            src="/images/CreacionesPropias/capibara.2.png"
+            alt="Amigurumi tejido a mano LanaNegra"
+            class="w-full h-full object-cover"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ ORIGEN ══════════════════════════ -->
+  <section id="origen" class="py-20" style="background:#f7f3ea;">
+    <div id="origen-track" class="max-w-[1400px] mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
+      <div id="origen-image" class="order-2 md:order-1 rounded-2xl overflow-hidden card-shadow" style="aspect-ratio: 1/1;">
+        <img
+          src="/images/nosotros/nosotros.jpeg"
+          alt="Familia LanaNegra: mamá, hermana y hermano"
+          class="w-full h-full object-cover"
+        />
+      </div>
+
+      <div class="order-1 md:order-2 flex flex-col gap-5">
+        <span class="motion-item chip chip-active inline-flex" style="background:#ffd9e2; color:#633b47; border:none; width:fit-content;">Un proyecto de familia</span>
+        <h2 class="motion-item" style="font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:1.75rem; color:#704653;">El Origen de LanaNegra</h2>
+        <p class="motion-item leading-relaxed" style="color:#1c1c17;">
+          Todo comenzó con mi mamá. Un día decidió retomar algo que aprendió de niña: tejer con sus propias manos, tal como lo hacían las mujeres de su familia, que lo dominaban con una destreza que ella siempre admiró. Ese gesto, casi de memoria, fue la primera puntada de lo que hoy es LanaNegra.
+        </p>
+        <p class="motion-item leading-relaxed" style="color:#1c1c17;">
+          Cuando mi hermana vio esas primeras creaciones, se enamoró de los amigurumis, y ahí empezó todo de verdad. Como <strong>diseñadora gráfica</strong>, fue ella quien le dio a cada muñeco su identidad: los colores, las expresiones, el estilo que hoy reconoces en cada pieza.
+        </p>
+        <p class="motion-item leading-relaxed" style="color:#1c1c17;">
+          Y yo, como <strong>ingeniero de software</strong>, me encargué de darles las herramientas para que ese talento se pudiera ver, crecer y llegar a más manos: esta tienda es una de ellas.
+        </p>
+        <p class="motion-item leading-relaxed" style="color:#47645b; font-style:italic; font-size:1.05rem;">
+          "Más que un negocio, LanaNegra es nuestra forma de honrar el amor y la dedicación que nuestra madre nos regaló, tejidos ahora entre los tres."
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ PILARES ══════════════════════════ -->
+  <section class="py-20">
+    <div class="max-w-[1400px] mx-auto px-6">
+      <div class="text-center mb-14">
+        <h2 class="section-title mb-3">Nuestros Pilares</h2>
+        <div class="divider-dots"><span></span><span></span><span></span></div>
+      </div>
+
+      <div id="pilares-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {pilares.map(p => (
+          <div class="motion-item review-card flex flex-col items-center text-center">
+            <div class={`step-icon motion-float ${p.variant}`}>
+              <span class="material-symbols-outlined" style="font-size:1.75rem;">{p.icon}</span>
+            </div>
+            <h3 class="mt-2 mb-3" style="font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:1.1rem; color:#704653;">{p.title}</h3>
+            <p class="text-sm leading-relaxed" style="color:#504446;">{p.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ PROCESO ══════════════════════════ -->
+  <section class="py-20" style="background:#f1eee5;">
+    <div class="max-w-[1400px] mx-auto px-6">
+      <div class="text-center mb-14">
+        <h2 class="section-title mb-3">El arte de crear</h2>
+        <div class="divider-dots"><span></span><span></span><span></span></div>
+        <p class="mt-3 text-base max-w-xl mx-auto" style="color:#504446;">
+          Cada compañero de LanaNegra atraviesa un viaje de transformación, desde una simple hebra hasta cobrar vida propia.
+        </p>
+      </div>
+
+      <div id="pasos-grid" class="relative grid grid-cols-2 md:grid-cols-4 gap-8 px-4">
+        <div id="pasos-line" class="hidden md:block dashed-line" style="position:absolute; top:2.5rem; left:15%; right:15%; height:1px; z-index:0; transform-origin:left; transform:scaleX(0);"></div>
+        {pasos.map(paso => (
+          <div class="motion-item relative z-10 flex flex-col items-center text-center gap-2">
+            <div class="step-icon motion-float" style="background:#ffffff; border:2px solid #8b5e6b; box-shadow:0 8px 24px rgba(112,70,83,0.12);">
+              <span class="material-symbols-outlined" style="font-size:1.75rem; color:#704653;">{paso.icon}</span>
+            </div>
+            <p class="text-xs font-bold uppercase tracking-widest" style="color:#704653; letter-spacing:0.1em;">{paso.label}</p>
+            <h4 style="font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:0.95rem; color:#1c1c17;">{paso.title}</h4>
+            <p class="text-xs leading-relaxed" style="color:#504446; max-width:150px;">{paso.text}</p>
+          </div>
+        ))}
+      </div>
+
+      <!-- Banner artesanal -->
+      <div id="banner-img" class="banner-reveal mt-16 relative overflow-hidden rounded-2xl" style="aspect-ratio: 21/9;">
+        <img
+          src="/images/Decoracion/Carpetas/1.1.jpg"
+          alt="Detalle artesanal LanaNegra"
+          class="w-full h-full object-cover"
+        />
+        <div class="absolute inset-0 flex flex-col justify-end p-8" style="background:linear-gradient(0deg, rgba(28,28,23,0.55) 0%, transparent 60%);">
+          <p style="font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:1.25rem; color:#ffffff;">Detalles que enamoran</p>
+          <p class="text-sm" style="color:rgba(255,255,255,0.85);">Cada pieza, tejida a mano con paciencia</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ CTA FINAL ══════════════════════════ -->
+  <section class="px-6 py-20">
+    <div id="cta-card" class="max-w-4xl mx-auto rounded-[3rem] overflow-hidden relative text-center p-12 md:p-16" style="background:#8b5e6b;">
+      <div class="motion-drift absolute top-0 right-0 w-40 h-40 rounded-full pointer-events-none" style="background:rgba(255,255,255,0.1); filter:blur(48px); margin-right:-5rem; margin-top:-5rem;"></div>
+      <div class="motion-drift absolute bottom-0 left-0 w-40 h-40 rounded-full pointer-events-none" style="background:rgba(255,255,255,0.1); filter:blur(48px); margin-left:-5rem; margin-bottom:-5rem; animation-delay:-4s;"></div>
+
+      <div class="relative z-10">
+        <h2 class="mb-4" style="font-family:'Plus Jakarta Sans', sans-serif; font-weight:800; font-size:1.75rem; color:#ffffff; line-height:1.2;">
+          ¿Listo para encontrar un nuevo amigo?
+        </h2>
+        <p class="mb-8 leading-relaxed" style="color:rgba(255,255,255,0.9); max-width:32rem; margin-left:auto; margin-right:auto;">
+          Explora nuestro catálogo de amigurumis terminados o contáctanos para personalizar tu propio diseño único.
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+          <a href="/#catalogo" class="cta-btn inline-flex items-center justify-center font-700 rounded-full px-8 py-4" style="background:#ffffff; color:#704653; font-weight:700;">
+            Explorar Catálogo
+          </a>
+          <a
+            href="https://wa.me/573228369024?text=Hola%20LanaNegra!%20%F0%9F%A7%B8%20Quiero%20personalizar%20mi%20propio%20amigurumi"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="cta-btn inline-flex items-center justify-center gap-2 font-700 rounded-full px-8 py-4"
+            style="border:2px solid rgba(255,255,255,0.5); color:#ffffff; font-weight:700;"
+          >
+            <span class="material-symbols-outlined" style="font-size:20px;">chat_bubble</span>
+            Personalizar Amigurumi
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<script>
+  import { animate, inView, stagger } from 'framer-motion';
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const easeOut = [0.16, 1, 0.3, 1] as const;
+
+  if (prefersReducedMotion) {
+    document.querySelectorAll<HTMLElement>('.motion-item, .hero-item').forEach(el => { el.style.opacity = '1'; });
+  } else {
+    /* ── Hero: entrada al cargar la página ── */
+    const heroTextItems = document.querySelectorAll<HTMLElement>('.hero-item:not(#hero-image)');
+    animate(heroTextItems, { opacity: [0, 1], y: [22, 0] }, { delay: stagger(0.1), duration: 0.6, ease: easeOut });
+
+    const heroImage = document.getElementById('hero-image');
+    if (heroImage) {
+      animate(heroImage, { opacity: [0, 1], scale: [0.92, 1] }, { duration: 0.7, ease: easeOut, delay: 0.15 });
+    }
+
+    /* ── Origen: la foto se desliza, el texto entra en cascada ── */
+    const origenTrack = document.getElementById('origen-track');
+    if (origenTrack) {
+      inView(origenTrack, () => {
+        const origenImage = document.getElementById('origen-image');
+        if (origenImage) {
+          animate(origenImage, { opacity: [0, 1], x: [-40, 0] }, { duration: 0.7, ease: easeOut });
+        }
+        const textItems = origenTrack.querySelectorAll<HTMLElement>('.motion-item');
+        animate(textItems, { opacity: [0, 1], y: [18, 0] }, { delay: stagger(0.1), duration: 0.55, ease: easeOut });
+      }, { amount: 0.3 });
+    }
+
+    /* ── Pilares: tarjetas en cascada + iconos flotando ── */
+    const pilaresGrid = document.getElementById('pilares-grid');
+    if (pilaresGrid) {
+      inView(pilaresGrid, () => {
+        const cards = pilaresGrid.querySelectorAll<HTMLElement>('.motion-item');
+        animate(cards, { opacity: [0, 1], y: [28, 0], scale: [0.95, 1] }, { delay: stagger(0.12), duration: 0.6, ease: easeOut });
+
+        pilaresGrid.querySelectorAll<HTMLElement>('.motion-float').forEach((el, i) => {
+          animate(el, { y: [0, -8, 0] }, { duration: 3.2, repeat: Infinity, ease: 'easeInOut', delay: 0.6 + i * 0.25 });
+        });
+      }, { amount: 0.3 });
+    }
+
+    /* ── Proceso: pasos en cascada + línea que se dibuja + iconos flotando ── */
+    const pasosGrid = document.getElementById('pasos-grid');
+    if (pasosGrid) {
+      inView(pasosGrid, () => {
+        const items = pasosGrid.querySelectorAll<HTMLElement>('.motion-item');
+        animate(items, { opacity: [0, 1], y: [28, 0], scale: [0.94, 1] }, { delay: stagger(0.12), duration: 0.6, ease: easeOut });
+
+        const line = document.getElementById('pasos-line');
+        if (line) animate(line, { scaleX: [0, 1] }, { duration: 0.9, ease: easeOut, delay: 0.1 });
+
+        pasosGrid.querySelectorAll<HTMLElement>('.motion-float').forEach((el, i) => {
+          animate(el, { y: [0, -8, 0] }, { duration: 3.2, repeat: Infinity, ease: 'easeInOut', delay: 0.6 + i * 0.25 });
+        });
+      }, { amount: 0.4 });
+    }
+
+    /* ── Banner artesanal: se revela como una cortina ── */
+    const bannerImg = document.getElementById('banner-img');
+    if (bannerImg) {
+      inView(bannerImg, () => {
+        animate(bannerImg, { clipPath: ['inset(0 0 100% 0)', 'inset(0 0 0% 0)'] }, { duration: 0.8, ease: easeOut });
+      }, { amount: 0.3 });
+    }
+
+    /* ── CTA final: aparece y las formas de fondo derivan solas ── */
+    const ctaCard = document.getElementById('cta-card');
+    if (ctaCard) {
+      inView(ctaCard, () => {
+        animate(ctaCard, { opacity: [0, 1], scale: [0.95, 1] }, { duration: 0.6, ease: easeOut });
+
+        ctaCard.querySelectorAll<HTMLElement>('.motion-drift').forEach((el, i) => {
+          animate(el, { x: [0, 16, -10, 0], y: [0, -14, 10, 0] }, { duration: 12 + i * 2, repeat: Infinity, ease: 'easeInOut' });
+        });
+      }, { amount: 0.3 });
+    }
+  }
+</script>

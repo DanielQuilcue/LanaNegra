@@ -7,7 +7,7 @@ import {
   type CartItem,
 } from '../stores/cart';
 
-const WA_NUMBER = '573001234567';
+const WA_NUMBER = '573228369024';
 
 /* ── Helpers ─────────────────────────────────────────────── */
 
@@ -41,12 +41,12 @@ function StepBtn({ label, onClick }: { label: string; onClick: () => void }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        color: '#824f66',
+        color: '#704653',
         fontFamily: "'Quicksand', sans-serif",
         flexShrink: 0,
         transition: 'background 0.15s, transform 0.1s',
       }}
-      onMouseEnter={e => (e.currentTarget.style.background = '#ffd8e6')}
+      onMouseEnter={e => (e.currentTarget.style.background = '#ffd9e2')}
       onMouseLeave={e => (e.currentTarget.style.background = '#f1eee5')}
       onMouseDown={e => (e.currentTarget.style.transform = 'scale(0.9)')}
       onMouseUp={e => (e.currentTarget.style.transform = 'scale(1)')}
@@ -81,7 +81,7 @@ function CartItemRow({ item, index }: { item: CartItem; index: number }) {
         width: '60px', height: '60px',
         borderRadius: '0.75rem',
         overflow: 'hidden',
-        background: 'linear-gradient(135deg, #ffd8e6 0%, #bde9da 100%)',
+        background: 'linear-gradient(135deg, #ffd9e2 0%, #c7e7db 100%)',
         flexShrink: 0,
       }}>
         <img
@@ -105,7 +105,7 @@ function CartItemRow({ item, index }: { item: CartItem; index: number }) {
         }}>
           {item.name}
         </p>
-        <p style={{ fontSize: '0.8125rem', color: '#824f66', fontWeight: 700, margin: '2px 0 0' }}>
+        <p style={{ fontSize: '0.8125rem', color: '#704653', fontWeight: 700, margin: '2px 0 0' }}>
           {formatCOP(item.price * item.quantity)}
         </p>
 
@@ -133,7 +133,7 @@ function CartItemRow({ item, index }: { item: CartItem; index: number }) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: '#d4c2c7',
+          color: '#d4c2c5',
           flexShrink: 0,
           transition: 'color 0.15s, background 0.15s',
         }}
@@ -142,7 +142,7 @@ function CartItemRow({ item, index }: { item: CartItem; index: number }) {
           e.currentTarget.style.background = '#ffdad6';
         }}
         onMouseLeave={e => {
-          e.currentTarget.style.color = '#d4c2c7';
+          e.currentTarget.style.color = '#d4c2c5';
           e.currentTarget.style.background = 'transparent';
         }}
       >
@@ -176,7 +176,7 @@ function EmptyState() {
       <p style={{ fontWeight: 700, fontSize: '1rem', color: '#1c1c17', margin: '0.25rem 0 0' }}>
         Tu carrito está vacío
       </p>
-      <p style={{ fontSize: '0.8125rem', color: '#827378', maxWidth: '200px', lineHeight: 1.6, margin: 0 }}>
+      <p style={{ fontSize: '0.8125rem', color: '#827376', maxWidth: '200px', lineHeight: 1.6, margin: 0 }}>
         Agrega amigurumis desde la tienda para comenzar tu pedido.
       </p>
     </motion.div>
@@ -264,7 +264,7 @@ export default function CartPanel() {
                 <h2 style={{ fontSize: '1.125rem', fontWeight: 700, color: '#1c1c17', letterSpacing: '-0.01em', margin: 0 }}>
                   Mi Carrito
                 </h2>
-                <p style={{ fontSize: '0.75rem', color: '#827378', margin: '2px 0 0' }}>
+                <p style={{ fontSize: '0.75rem', color: '#827376', margin: '2px 0 0' }}>
                   {totalItems === 0
                     ? 'Vacío'
                     : `${totalItems} producto${totalItems !== 1 ? 's' : ''}`}
@@ -285,13 +285,13 @@ export default function CartPanel() {
                   transition: 'background 0.15s, transform 0.1s',
                   flexShrink: 0,
                 }}
-                onMouseEnter={e => (e.currentTarget.style.background = '#ffd8e6')}
+                onMouseEnter={e => (e.currentTarget.style.background = '#ffd9e2')}
                 onMouseLeave={e => (e.currentTarget.style.background = '#f1eee5')}
                 onMouseDown={e => (e.currentTarget.style.transform = 'scale(0.93)')}
                 onMouseUp={e => (e.currentTarget.style.transform = 'scale(1)')}
               >
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-                  stroke="#824f66" strokeWidth="2.5" strokeLinecap="round">
+                  stroke="#704653" strokeWidth="2.5" strokeLinecap="round">
                   <line x1="18" y1="6" x2="6" y2="18"/>
                   <line x1="6" y1="6" x2="18" y2="18"/>
                 </svg>
@@ -327,7 +327,7 @@ export default function CartPanel() {
                 >
                   {/* Total */}
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.875rem' }}>
-                    <span style={{ fontSize: '0.875rem', fontWeight: 600, color: '#504348' }}>
+                    <span style={{ fontSize: '0.875rem', fontWeight: 600, color: '#504446' }}>
                       Total del pedido
                     </span>
                     <motion.span
@@ -335,7 +335,7 @@ export default function CartPanel() {
                       initial={{ scale: 0.88, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ type: 'spring', duration: 0.35, bounce: 0.25 }}
-                      style={{ fontSize: '1.25rem', fontWeight: 700, color: '#824f66', letterSpacing: '-0.015em' }}
+                      style={{ fontSize: '1.25rem', fontWeight: 700, color: '#704653', letterSpacing: '-0.015em' }}
                     >
                       {formatCOP(total)}
                     </motion.span>
@@ -350,7 +350,7 @@ export default function CartPanel() {
                       gap: '0.55rem',
                       width: '100%',
                       padding: '0.9rem 1.5rem',
-                      background: '#3d665a',
+                      background: '#47645b',
                       color: '#ffffff',
                       border: 'none',
                       borderRadius: '9999px',
@@ -362,12 +362,12 @@ export default function CartPanel() {
                       transition: 'background 0.15s, transform 0.12s, box-shadow 0.12s',
                     }}
                     onMouseEnter={e => {
-                      e.currentTarget.style.background = '#2d5248';
+                      e.currentTarget.style.background = '#395249';
                       e.currentTarget.style.transform = 'translateY(-1px)';
                       e.currentTarget.style.boxShadow = '0 4px 0 0 rgba(28,48,42,0.4)';
                     }}
                     onMouseLeave={e => {
-                      e.currentTarget.style.background = '#3d665a';
+                      e.currentTarget.style.background = '#47645b';
                       e.currentTarget.style.transform = 'translateY(0)';
                       e.currentTarget.style.boxShadow = '0 2px 0 0 rgba(28,48,42,0.5)';
                     }}
@@ -386,7 +386,7 @@ export default function CartPanel() {
                     Comprar por WhatsApp
                   </button>
 
-                  <p style={{ fontSize: '0.7rem', color: '#827378', textAlign: 'center', marginTop: '0.75rem', lineHeight: 1.5 }}>
+                  <p style={{ fontSize: '0.7rem', color: '#827376', textAlign: 'center', marginTop: '0.75rem', lineHeight: 1.5 }}>
                     Te enviaremos el resumen del pedido por WhatsApp
                   </p>
                 </motion.div>

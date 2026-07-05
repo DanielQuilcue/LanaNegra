@@ -1,57 +1,50 @@
 ---
-const links = {
-  tienda: ['Catálogo', 'Novedades', 'Personalizados', 'Cuidados'],
-  info: ['Sobre Nosotras', 'Proceso', 'Testimonios', 'Blog'],
-  ayuda: ['Envíos', 'Devoluciones', 'FAQ', 'Contacto'],
-};
+const linkColumns = [
+  {
+    title: 'Marca',
+    links: [
+      { label: 'Catálogo', href: '/#catalogo' },
+      { label: 'Sobre Nosotros', href: '/sobre-nosotros' },
+    ],
+  },
+  {
+    title: 'Ayuda',
+    links: [
+      { label: 'Contacto (WhatsApp)', href: 'https://wa.me/573228369024', external: true },
+      { label: 'Términos', href: '/terminos' },
+      { label: 'Privacidad', href: '/privacidad' },
+    ],
+  },
+];
 ---
 
-<footer style="background:#1c1c17; color:#f4f0e8;" class="mt-24">
-  <div class="max-w-6xl mx-auto px-6 py-16">
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
+<footer style="background:#31312b; color:#f4f0e7;" class="mt-24 pt-20 pb-10 px-6">
+  <div class="max-w-[1400px] mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-16">
       <!-- Brand -->
       <div class="col-span-1">
-        <div class="flex items-center gap-2 mb-4">
-          <span class="text-2xl font-bold" style="color:#f5b4cf;">lananegra</span>
-          <span style="color:#a4d0c1; font-size:1.25rem;">✿</span>
-        </div>
-        <p class="text-sm leading-relaxed mb-6" style="color:#827378;">
+        <span style="font-family:'Plus Jakarta Sans', sans-serif; color:#ffd9e2; font-size:1.375rem; font-weight:800;">
+          lananegra
+        </span>
+        <p class="text-sm leading-relaxed mt-4 mb-6" style="color:#d4c2c5;">
           Amigurumis tejidos a mano con amor. Cada compañero lleva horas de dedicación y un toque de magia artesanal.
         </p>
-        <div class="flex gap-3">
-          {['ig', 'fb', 'pt'].map(s => (
-            <a
-              href="#"
-              class="w-9 h-9 rounded-full flex items-center justify-center transition-colors"
-              style="background:#31312b;"
-              onmouseover="this.style.background='#824f66'"
-              onmouseout="this.style.background='#31312b'"
-              aria-label={s}
-            >
-              <span class="text-xs font-bold" style="color:#f4f0e8;">{s.toUpperCase()}</span>
-            </a>
-          ))}
-        </div>
       </div>
 
       <!-- Links -->
-      {Object.entries(links).map(([section, items]) => (
+      {linkColumns.map(col => (
         <div>
-          <h4 class="text-sm font-700 mb-4 uppercase tracking-wider" style="color:#f5b4cf; letter-spacing:0.08em;">
-            {section === 'tienda' ? 'Tienda' : section === 'info' ? 'Info' : 'Ayuda'}
+          <h4 class="text-sm font-bold mb-5 uppercase tracking-wider" style="font-family:'Plus Jakarta Sans', sans-serif; color:#ffffff; letter-spacing:0.08em;">
+            {col.title}
           </h4>
-          <ul class="space-y-2">
-            {items.map(item => (
+          <ul class="space-y-3">
+            {col.links.map(link => (
               <li>
-                <a
-                  href="#"
-                  class="text-sm transition-colors"
-                  style="color:#827378;"
-                  onmouseover="this.style.color='#f4f0e8'"
-                  onmouseout="this.style.color='#827378'"
-                >
-                  {item}
-                </a>
+                {link.external ? (
+                  <a href={link.href} target="_blank" rel="noopener noreferrer" class="footer-link">{link.label}</a>
+                ) : (
+                  <a href={link.href} class="footer-link">{link.label}</a>
+                )}
               </li>
             ))}
           </ul>
@@ -59,9 +52,23 @@ const links = {
       ))}
     </div>
 
-    <div class="mt-12 pt-6 flex flex-col md:flex-row items-center justify-between gap-4" style="border-top:1px solid #31312b;">
-      <p class="text-xs" style="color:#504348;">© 2026 LanaNegra. Tejido con amor.</p>
-      <p class="text-xs" style="color:#504348;">Hecho a mano en cada puntada ✿</p>
+    <div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs" style="border-top:1px solid rgba(244,240,231,0.1); color:rgba(244,240,231,0.6);">
+      <p>© 2026 lananegra. Tejido con amor.</p>
+      <div class="flex gap-6">
+        <a href="/terminos" style="color:inherit; text-decoration:none;" class="hover:underline">Términos</a>
+        <a href="/privacidad" style="color:inherit; text-decoration:none;" class="hover:underline">Privacidad</a>
+      </div>
     </div>
   </div>
 </footer>
+
+<style>
+  .footer-link {
+    font-size: 0.875rem;
+    color: #d4c2c5;
+    text-decoration: none;
+    transition: color 0.2s, transform 0.2s;
+    display: inline-block;
+  }
+  .footer-link:hover { color: #ffffff; transform: translateX(3px); }
+</style>

@@ -18,51 +18,93 @@ const { product, related } = Astro.props;
 
 const price = `$${product.price.toLocaleString('es-CO')} ${product.currency ?? 'COP'}`;
 const whatsappMsg = encodeURIComponent(`Hola LanaNegra! Me interesa el ${product.name} 🧸`);
-const whatsappUrl = `https://wa.me/${product.whatsapp ?? '573001234567'}?text=${whatsappMsg}`;
+const whatsappUrl = `https://wa.me/${product.whatsapp ?? '573228369024'}?text=${whatsappMsg}`;
 
 const badgeClass: Record<string, string> = {
   new: 'badge-new',
   pre: 'badge-pre',
   sale: 'badge-sale',
 };
+
+const galleryImages = product.thumbnails && product.thumbnails.length > 0
+  ? product.thumbnails
+  : [product.image];
+
+const siteOrigin = Astro.site?.origin ?? Astro.url.origin;
+const productSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: product.name,
+  image: galleryImages.map(img => new URL(img, siteOrigin).href),
+  description: product.description ?? `${product.name} — amigurumi tejido a mano por LanaNegra.`,
+  sku: product.id,
+  category: product.category,
+  brand: { '@type': 'Brand', name: 'LanaNegra' },
+  offers: {
+    '@type': 'Offer',
+    url: new URL(`/tienda/${product.id}`, siteOrigin).href,
+    priceCurrency: product.currency ?? 'COP',
+    price: product.price,
+    availability: 'https://schema.org/InStock',
+  },
+};
 ---
 
-<BaseLayout title={`${product.name} — LanaNegra`} description={product.description}>
+<BaseLayout title={`${product.name} — LanaNegra`} description={product.description} image={product.image}>
+
+  <script type="application/ld+json" set:html={JSON.stringify(productSchema)} />
 
   <!-- BREADCRUMB -->
-  <nav aria-label="Breadcrumb" class="max-w-6xl mx-auto px-6 pt-6 pb-2">
-    <ol class="flex items-center gap-2 text-sm" style="color:#827378;">
+  <nav aria-label="Breadcrumb" class="max-w-[1400px] mx-auto px-6 pt-6 pb-2">
+    <ol class="flex items-center gap-2 text-sm" style="color:#827376;">
       <li><a href="/" class="transition-colors hover-primary">Inicio</a></li>
-      <li aria-hidden="true">·</li>
+      <li aria-hidden="true">•</li>
       <li><a href="/#catalogo" class="transition-colors hover-primary">Colección</a></li>
-      <li aria-hidden="true">·</li>
-      <li style="color:#1c1c17; font-weight:600;">{product.name}</li>
+      <li aria-hidden="true">•</li>
+      <li style="color:#704653; font-weight:700;">{product.name}</li>
     </ol>
   </nav>
 
   <!-- MAIN DETAIL -->
-  <section class="max-w-6xl mx-auto px-6 py-10 md:py-14 grid md:grid-cols-2 gap-10 md:gap-16 items-start">
+  <section class="max-w-[1400px] mx-auto px-6 py-10 md:py-14 grid md:grid-cols-2 gap-10 md:gap-16 items-start">
 
     <!-- LEFT: Imagen + thumbnails -->
     <div class="flex flex-col gap-5 anim-left">
 
-      <!-- Blob contenedor de imagen -->
-      <div
-        class="product-blob relative flex items-center justify-center overflow-hidden"
-        style="background: linear-gradient(135deg, #ffd8e6 0%, #f7f3ea 48%, #bde9da 100%); padding: 2.5rem; aspect-ratio: 1/1;"
-      >
-        {product.badge && (
-          <span class={`badge ${badgeClass[product.badge!]} absolute top-5 left-5 z-10`}>
-            {product.badgeLabel ?? product.badge}
-          </span>
-        )}
-        <img
-          id="main-img"
-          src={product.image}
-          alt={product.name}
-          class="w-full h-full object-contain img-crossfade"
-          loading="eager"
-        />
+      <!-- Blob contenedor de imagen: fondo animado que se mueve solo -->
+      <div class="relative">
+        <div
+          class="product-blob relative flex items-center justify-center overflow-hidden"
+          style="background: linear-gradient(135deg, #ffd9e2 0%, #f7f3ea 48%, #c9e9de 100%); padding: 2.5rem; aspect-ratio: 1/1;"
+        >
+          {product.badge && (
+            <span class={`badge ${badgeClass[product.badge!]} absolute top-5 left-5 z-10`}>
+              {product.badgeLabel ?? product.badge}
+            </span>
+          )}
+          <img
+            id="main-img"
+            src={product.image}
+            alt={product.name}
+            class="w-full h-full object-contain img-crossfade"
+            loading="eager"
+          />
+        </div>
+
+        <!-- Fuera del blob para que el overflow-hidden + border-radius orgánico no lo recorte -->
+        <button
+          type="button"
+          id="main-img-zoom"
+          class="lightbox-trigger"
+          style="top:1.75rem; right:1.75rem;"
+          data-lightbox={product.image}
+          data-lightbox-images={JSON.stringify(galleryImages)}
+          data-lightbox-index="0"
+          data-lightbox-alt={product.name}
+          aria-label={`Ver ${product.name} en grande`}
+        >
+          <span class="material-symbols-outlined" style="font-size:20px;">zoom_in</span>
+        </button>
       </div>
 
       <!-- Thumbnails -->
@@ -75,7 +117,7 @@ const badgeClass: Record<string, string> = {
               aria-label={`Vista ${i + 1} del producto`}
               type="button"
             >
-              <img src={src} alt="" class="w-full h-full object-cover" />
+              <img src={src} alt={`${product.name} — foto ${i + 1}`} class="w-full h-full object-cover" />
             </button>
           ))}
         </div>
@@ -86,24 +128,24 @@ const badgeClass: Record<string, string> = {
     <div class="flex flex-col gap-5">
 
       <!-- Kicker -->
-      <p class="detail-kicker text-xs font-bold uppercase tracking-widest" style="color:#3d665a; letter-spacing:0.12em;">
+      <p class="detail-kicker text-xs font-bold uppercase tracking-widest" style="color:#47645b; letter-spacing:0.12em;">
         {product.kicker ?? product.category}
       </p>
 
       <!-- Nombre -->
-      <h1 class="detail-name font-bold" style="font-size:clamp(1.9rem,4vw,2.6rem); line-height:1.08; color:#1c1c17; letter-spacing:-0.025em; margin-top:-0.25rem;">
+      <h1 class="detail-name" style="font-family:'Plus Jakarta Sans', sans-serif; font-weight:800; font-size:clamp(1.9rem,4vw,2.6rem); line-height:1.08; color:#1c1c17; letter-spacing:-0.025em; margin-top:-0.25rem;">
         {product.name}
       </h1>
 
       <!-- Precio -->
-      <p class="detail-price font-bold" style="font-size:1.5rem; color:#824f66; letter-spacing:-0.01em;">
+      <p class="detail-price" style="font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:1.5rem; color:#8b5e6b; letter-spacing:-0.01em;">
         {price}
       </p>
 
-      <!-- Descripción en caja menta -->
+      <!-- Descripción glassmorphism -->
       {product.description && (
-        <blockquote class="detail-desc" style="background:#e8f5f0; border-radius:1rem; padding:1.25rem 1.5rem; margin:0;">
-          <p class="text-sm leading-relaxed" style="color:#1e4a3d; font-style:italic;">
+        <blockquote class="detail-desc" style="background:rgba(199,231,219,0.35); backdrop-filter:blur(4px); border:1px solid rgba(199,231,219,0.5); border-radius:1rem; padding:1.25rem 1.5rem; margin:0;">
+          <p class="text-sm leading-relaxed" style="color:#3a5750; font-style:italic;">
             "{product.description}"
           </p>
         </blockquote>
@@ -128,12 +170,10 @@ const badgeClass: Record<string, string> = {
           </div>
 
           <div class="flex items-start gap-3" style="padding: 0.5rem 0;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3d665a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0; margin-top:2px;">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            </svg>
+            <span class="material-symbols-outlined" style="color:#47645b; font-size:18px; margin-top:1px;">shield</span>
             <div>
               <p class="spec-label">Seguridad</p>
-              <p class="text-sm" style="color:#504348;">{product.details.safety}</p>
+              <p class="text-sm" style="color:#504446;">{product.details.safety}</p>
             </div>
           </div>
         </div>
@@ -147,9 +187,7 @@ const badgeClass: Record<string, string> = {
           rel="noopener noreferrer"
           class="btn-whatsapp"
         >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/>
-          </svg>
+          <span class="material-symbols-outlined" style="font-size:20px;">chat_bubble</span>
           Pedir por WhatsApp
         </a>
 
@@ -164,17 +202,17 @@ const badgeClass: Record<string, string> = {
       </div>
 
       <!-- Trust badges -->
-      <div class="detail-badges flex items-center gap-6 pt-4" style="border-top: 1px solid rgba(212,194,199,0.35);">
+      <div class="detail-badges flex items-center gap-6 pt-4" style="border-top: 1px solid rgba(212,194,197,0.35);">
         <div class="trust-badge">
-          <span aria-hidden="true">📦</span>
+          <span class="material-symbols-outlined" style="color:#704653;">package_2</span>
           <span>Envío Nacional</span>
         </div>
         <div class="trust-badge">
-          <span aria-hidden="true">🧶</span>
+          <span class="material-symbols-outlined" style="color:#704653;">draw</span>
           <span>Hecho a Mano</span>
         </div>
         <div class="trust-badge">
-          <span aria-hidden="true">🌿</span>
+          <span class="material-symbols-outlined" style="color:#704653;">eco</span>
           <span>Eco-friendly</span>
         </div>
       </div>
@@ -185,16 +223,16 @@ const badgeClass: Record<string, string> = {
   <!-- PRODUCTOS RELACIONADOS -->
   {related.length > 0 && (
     <section style="background:#f7f3ea;" class="py-16 px-6">
-      <div class="max-w-6xl mx-auto">
+      <div class="max-w-[1400px] mx-auto">
         <div class="text-center mb-10">
-          <p class="text-xs font-bold uppercase tracking-widest mb-2" style="color:#827378; letter-spacing:0.1em;">
+          <p class="text-xs font-bold uppercase tracking-widest mb-2" style="color:#827376; letter-spacing:0.1em;">
             Te podría enamorar también
           </p>
           <h2 class="section-title">Más para ti</h2>
           <div class="divider-dots"><span></span><span></span><span></span></div>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {related.map((rp, i) => (
             <div class="reveal-item" style={`--delay: ${i * 120}ms`}>
               <ProductCard product={rp} />
@@ -241,7 +279,7 @@ const badgeClass: Record<string, string> = {
   .detail-cta    { animation: slideUp 0.45s var(--ease-quint) 0.58s  both; }
   .detail-badges { animation: slideUp 0.4s  var(--ease-quint) 0.7s   both; }
 
-  /* ── Blob morph ──────────────────────────────────────── */
+  /* ── Blob morph: el fondo que se mueve solo ───────────── */
   .product-blob {
     animation: blobMorph 9s ease-in-out infinite;
     will-change: border-radius;
@@ -267,14 +305,14 @@ const badgeClass: Record<string, string> = {
   }
   .thumb-btn:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 14px rgba(130,79,102,0.2);
+    box-shadow: 0 4px 14px rgba(112,70,83,0.2);
   }
   .thumb-btn:focus-visible {
-    outline: 2px solid #824f66;
+    outline: 2px solid #704653;
   }
   .thumb-btn.thumb-active {
-    border-color: #824f66;
-    box-shadow: 0 0 0 3px rgba(130,79,102,0.14);
+    border-color: #704653;
+    box-shadow: 0 0 0 3px rgba(112,70,83,0.14);
   }
 
   /* ── Spec cells ──────────────────────────────────────── */
@@ -286,7 +324,7 @@ const badgeClass: Record<string, string> = {
   .spec-label {
     font-size: 0.68rem;
     font-weight: 700;
-    color: #827378;
+    color: #827376;
     text-transform: uppercase;
     letter-spacing: 0.07em;
     margin-bottom: 0.25rem;
@@ -303,25 +341,25 @@ const badgeClass: Record<string, string> = {
     align-items: center;
     justify-content: center;
     gap: 0.55rem;
-    background: #3d665a;
+    background: #47645b;
     color: #ffffff;
     padding: 0.9rem 1.75rem;
     border-radius: 9999px;
     font-weight: 700;
+    font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 1rem;
     border: none;
     cursor: pointer;
     text-decoration: none;
-    box-shadow: 0 2px 0 0 rgba(28,48,42,0.5);
-    transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 8px 24px rgba(71,100,91,0.3);
+    transition: filter 0.15s ease, transform 0.15s ease;
   }
   .btn-whatsapp:hover {
-    background: #2d5248;
+    filter: brightness(1.08);
     transform: translateY(-1px);
-    box-shadow: 0 4px 0 0 rgba(28,48,42,0.4);
   }
-  .btn-whatsapp:active { transform: translateY(1px); box-shadow: none; }
-  .btn-whatsapp:focus-visible { outline: 2px solid #3d665a; outline-offset: 3px; }
+  .btn-whatsapp:active { transform: scale(0.98); }
+  .btn-whatsapp:focus-visible { outline: 2px solid #47645b; outline-offset: 3px; }
 
 
   /* ── Trust badges ────────────────────────────────────── */
@@ -332,11 +370,10 @@ const badgeClass: Record<string, string> = {
     gap: 0.3rem;
     text-align: center;
   }
-  .trust-badge span:first-child { font-size: 1.2rem; }
-  .trust-badge span:last-child  { font-size: 0.7rem; font-weight: 600; color: #504348; }
+  .trust-badge span:last-child  { font-size: 0.7rem; font-weight: 600; color: #504446; }
 
   /* ── Hover breadcrumb ────────────────────────────────── */
-  .hover-primary:hover { color: #824f66; }
+  .hover-primary:hover { color: #704653; }
 
   /* ── Scroll reveal for related ───────────────────────── */
   .reveal-item {
@@ -372,9 +409,10 @@ const badgeClass: Record<string, string> = {
 <script>
   /* ── Thumbnail switcher ────────────────────────────── */
   const mainImg = document.getElementById('main-img') as HTMLImageElement | null;
+  const mainImgZoom = document.getElementById('main-img-zoom') as HTMLButtonElement | null;
   const thumbBtns = document.querySelectorAll<HTMLButtonElement>('.thumb-btn');
 
-  thumbBtns.forEach(btn => {
+  thumbBtns.forEach((btn, i) => {
     btn.addEventListener('click', () => {
       const src = btn.dataset.src;
       if (!mainImg || !src || mainImg.src.endsWith(src)) return;
@@ -386,6 +424,8 @@ const badgeClass: Record<string, string> = {
       setTimeout(() => {
         mainImg.src = src;
         mainImg.style.opacity = '1';
+        mainImgZoom?.setAttribute('data-lightbox', src);
+        mainImgZoom?.setAttribute('data-lightbox-index', String(i));
       }, 120);
     });
   });

@@ -23,11 +23,11 @@ export default function CartButton() {
         justifyContent: 'center',
         flexShrink: 0,
       }}
-      onMouseEnter={e => (e.currentTarget.style.background = '#ffd8e6')}
+      onMouseEnter={e => (e.currentTarget.style.background = '#ffd9e2')}
       onMouseLeave={e => (e.currentTarget.style.background = '#f1eee5')}
     >
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-        stroke="#824f66" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+        stroke="#704653" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
         aria-hidden="true">
         <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
         <line x1="3" y1="6" x2="21" y2="6"/>
@@ -46,7 +46,7 @@ export default function CartButton() {
               position: 'absolute',
               top: '-3px',
               right: '-3px',
-              background: '#824f66',
+              background: '#704653',
               color: '#ffffff',
               fontSize: '0.6rem',
               fontWeight: 700,

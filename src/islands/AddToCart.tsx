@@ -47,7 +47,7 @@ export default function AddToCart({ id, name, price, currency, image }: Props) {
         gap: '0.55rem',
         width: '100%',
         padding: '0.9rem 1.75rem',
-        backgroundColor: added ? '#3d665a' : '#635979',
+        backgroundColor: added ? '#47645b' : '#535066',
         color: '#ffffff',
         border: 'none',
         borderRadius: '9999px',
