@@ -3,10 +3,12 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProductCard from '../../components/product/ProductCard.astro';
 import AddToCart from '../../islands/AddToCart';
 import { products } from '../../data/products';
+import { smallImage } from '../../lib/images';
+import { slugify } from '../../lib/slug';
 
 export function getStaticPaths() {
   return products.map(p => ({
-    params: { id: p.id },
+    params: { slug: slugify(p.name) },
     props: {
       product: p,
       related: products.filter(r => r.id !== p.id).slice(0, 3),
@@ -19,6 +21,7 @@ const { product, related } = Astro.props;
 const price = `$${product.price.toLocaleString('es-CO')} ${product.currency ?? 'COP'}`;
 const whatsappMsg = encodeURIComponent(`Hola LanaNegra! Me interesa el ${product.name} 🧸`);
 const whatsappUrl = `https://wa.me/${product.whatsapp ?? '573228369024'}?text=${whatsappMsg}`;
+const productPath = `/tienda/${slugify(product.name)}`;
 
 const badgeClass: Record<string, string> = {
   new: 'badge-new',
@@ -42,7 +45,7 @@ const productSchema = {
   brand: { '@type': 'Brand', name: 'LanaNegra' },
   offers: {
     '@type': 'Offer',
-    url: new URL(`/tienda/${product.id}`, siteOrigin).href,
+    url: new URL(productPath, siteOrigin).href,
     priceCurrency: product.currency ?? 'COP',
     price: product.price,
     availability: 'https://schema.org/InStock',
@@ -69,13 +72,13 @@ const productSchema = {
   <section class="max-w-[1400px] mx-auto px-6 py-10 md:py-14 grid md:grid-cols-2 gap-10 md:gap-16 items-start">
 
     <!-- LEFT: Imagen + thumbnails -->
-    <div class="flex flex-col gap-5 anim-left">
+    <div class="flex flex-col gap-5 anim-left min-w-0">
 
       <!-- Blob contenedor de imagen: fondo animado que se mueve solo -->
-      <div class="relative">
+      <div class="relative w-full">
         <div
           class="product-blob relative flex items-center justify-center overflow-hidden"
-          style="background: linear-gradient(135deg, #ffd9e2 0%, #f7f3ea 48%, #c9e9de 100%); padding: 2.5rem; aspect-ratio: 1/1;"
+          style="background: linear-gradient(135deg, #ffd9e2 0%, #f7f3ea 48%, #c9e9de 100%); padding: clamp(1rem, 4vw, 2.5rem); aspect-ratio: 1/1;"
         >
           {product.badge && (
             <span class={`badge ${badgeClass[product.badge!]} absolute top-5 left-5 z-10`}>
@@ -88,6 +91,8 @@ const productSchema = {
             alt={product.name}
             class="w-full h-full object-contain img-crossfade"
             loading="eager"
+            fetchpriority="high"
+            decoding="async"
           />
         </div>
 
@@ -109,23 +114,25 @@ const productSchema = {
 
       <!-- Thumbnails -->
       {product.thumbnails && product.thumbnails.length > 0 && (
-        <div class="flex gap-3 anim-thumbs">
-          {product.thumbnails.map((src, i) => (
-            <button
-              class={`thumb-btn ${i === 0 ? 'thumb-active' : ''}`}
-              data-src={src}
-              aria-label={`Vista ${i + 1} del producto`}
-              type="button"
-            >
-              <img src={src} alt={`${product.name} — foto ${i + 1}`} class="w-full h-full object-cover" />
-            </button>
-          ))}
+        <div class="thumbs-wrap">
+          <div class="flex gap-3 anim-thumbs overflow-x-auto no-scrollbar pb-1 min-w-0 w-full snap-x">
+            {product.thumbnails.map((src, i) => (
+              <button
+                class={`thumb-btn snap-start shrink-0 ${i === 0 ? 'thumb-active' : ''}`}
+                data-src={src}
+                aria-label={`Vista ${i + 1} del producto`}
+                type="button"
+              >
+                <img src={smallImage(src)} alt={`${product.name} — foto ${i + 1}`} class="w-full h-full object-cover" loading="lazy" decoding="async" />
+              </button>
+            ))}
+          </div>
         </div>
       )}
     </div>
 
     <!-- RIGHT: Info del producto -->
-    <div class="flex flex-col gap-5">
+    <div class="flex flex-col gap-5 min-w-0">
 
       <!-- Kicker -->
       <p class="detail-kicker text-xs font-bold uppercase tracking-widest" style="color:#47645b; letter-spacing:0.12em;">
@@ -197,7 +204,7 @@ const productSchema = {
           name={product.name}
           price={product.price}
           currency={product.currency ?? 'COP'}
-          image={product.image}
+          image={smallImage(product.image)}
         />
       </div>
 
@@ -291,9 +298,29 @@ const productSchema = {
   }
 
   /* ── Thumbnail buttons ───────────────────────────────── */
+  .thumbs-wrap {
+    position: relative;
+    min-width: 0;
+  }
+  /* Degradado a la derecha: avisa que hay más fotos sin que parezca cortado */
+  .thumbs-wrap::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0.25rem;
+    width: 2.25rem;
+    background: linear-gradient(to right, rgba(253, 249, 240, 0), #fdf9f0 85%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 180ms ease;
+  }
+  .thumbs-wrap.is-scrollable::after { opacity: 1; }
+
   .thumb-btn {
     flex: 0 0 78px;
     height: 78px;
+    max-width: 78px;
     border-radius: 0.875rem;
     overflow: hidden;
     border: 2px solid transparent;
@@ -411,6 +438,23 @@ const productSchema = {
   const mainImg = document.getElementById('main-img') as HTMLImageElement | null;
   const mainImgZoom = document.getElementById('main-img-zoom') as HTMLButtonElement | null;
   const thumbBtns = document.querySelectorAll<HTMLButtonElement>('.thumb-btn');
+
+  /* El degradado del borde solo se muestra si de verdad hay fotos por deslizar */
+  const thumbsWrap = document.querySelector<HTMLElement>('.thumbs-wrap');
+  const thumbsStrip = thumbsWrap?.querySelector<HTMLElement>('[class*="overflow-x-auto"]') ?? null;
+
+  function updateThumbsHint() {
+    if (!thumbsWrap || !thumbsStrip) return;
+    const more = thumbsStrip.scrollWidth - thumbsStrip.clientWidth - thumbsStrip.scrollLeft > 2;
+    thumbsWrap.classList.toggle('is-scrollable', more);
+  }
+
+  if (thumbsStrip) {
+    updateThumbsHint();
+    thumbsStrip.addEventListener('scroll', updateThumbsHint, { passive: true });
+    window.addEventListener('resize', updateThumbsHint);
+    window.addEventListener('load', updateThumbsHint, { once: true });
+  }
 
   thumbBtns.forEach((btn, i) => {
     btn.addEventListener('click', () => {

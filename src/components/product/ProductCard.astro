@@ -1,5 +1,7 @@
 ---
 import type { Product } from '../../types/product';
+import { srcSet, smallImage } from '../../lib/images';
+import { slugify } from '../../lib/slug';
 
 interface Props {
   product: Product;
@@ -10,16 +12,19 @@ const { product } = Astro.props;
 const price = `$${product.price.toLocaleString('es-CO')} ${product.currency ?? 'COP'}`;
 ---
 
-<a href={`/tienda/${product.id}`} class="product-card-link" aria-label={`Ver ${product.name}`}>
+<a href={`/tienda/${slugify(product.name)}`} class="product-card-link" aria-label={`Ver ${product.name}`}>
   <article class="product-card">
     <div class="product-img-wrapper relative">
       <span class="category-tag absolute top-4 right-4">{product.category}</span>
       <div class="img-skeleton"></div>
       <img
         src={product.image}
+        srcset={srcSet(product.image)}
+        sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 420px"
         alt={product.name}
         class="w-full h-full object-contain product-img"
         loading="lazy"
+        decoding="async"
       />
     </div>
 
@@ -36,7 +41,7 @@ const price = `$${product.price.toLocaleString('es-CO')} ${product.currency ?? '
           data-product-name={product.name}
           data-product-price={product.price}
           data-product-currency={product.currency ?? 'COP'}
-          data-product-image={product.image}
+          data-product-image={smallImage(product.image)}
         >
           <span class="material-symbols-outlined" style="font-size:20px;">add_shopping_cart</span>
         </button>
@@ -92,6 +97,7 @@ const price = `$${product.price.toLocaleString('es-CO')} ${product.currency ?? '
     text-transform: uppercase;
     padding: 0.5rem 1rem;
     border-radius: 9999px;
+    z-index: 10;
   }
 </style>
 

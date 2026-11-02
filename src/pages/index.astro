@@ -32,7 +32,20 @@ const reviews: Review[] = [
   },
 ];
 
-const categories = ['Todos', 'Animales', 'Navidad', 'Anime', 'Superhéroes', 'Caricatura', 'Creaciones Propias', 'Decoración'];
+const categories = [
+  'Todos',
+  'Animales',
+  'Navidad',
+  'Gatos',
+  'Caricatura',
+  'Anime',
+  'Superhéroes',
+  'Creaciones Propias',
+  'Decoración',
+];
+
+// Productos por página del catálogo. Con 28 productos son 4 páginas.
+const PER_PAGE = 8;
 ---
 
 <BaseLayout>
@@ -62,8 +75,8 @@ const categories = ['Todos', 'Animales', 'Navidad', 'Anime', 'Superhéroes', 'Ca
       <!-- Imagen hero -->
       <div class="relative flex justify-center items-center">
         <!-- Blobs decorativos animados (fondo que se mueve solo) -->
-        <div class="absolute blob-bg" style="width:420px; height:420px; background:rgba(199,231,219,0.45); --blob-rot:-12deg; transform:translate(10px,10px) rotate(-12deg);"></div>
-        <div class="absolute blob-bg" style="width:360px; height:360px; background:rgba(139,94,107,0.2); --blob-rot:45deg; transform:translate(-10px,-10px) rotate(45deg); animation-delay:-6s;"></div>
+        <div class="absolute blob-bg" style="width:clamp(190px, 78vw, 420px); height:clamp(190px, 78vw, 420px); background:rgba(199,231,219,0.45); --blob-rot:-12deg; transform:translate(10px,10px) rotate(-12deg);"></div>
+        <div class="absolute blob-bg" style="width:clamp(160px, 66vw, 360px); height:clamp(160px, 66vw, 360px); background:rgba(139,94,107,0.2); --blob-rot:45deg; transform:translate(-10px,-10px) rotate(45deg); animation-delay:-6s;"></div>
 
         <div id="hero-image" class="hero-item relative z-10 w-full max-w-md aspect-square rounded-[3rem] overflow-hidden card-shadow">
           <img
@@ -101,7 +114,11 @@ const categories = ['Todos', 'Animales', 'Navidad', 'Anime', 'Superhéroes', 'Ca
     <!-- Grid de productos -->
     <div id="catalogo-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
       {products.map((product, i) => (
-        <div class="catalog-item stagger-item" style={`--i: ${i}`} data-category={product.category}>
+        <div
+          class={`catalog-item stagger-item${i >= PER_PAGE ? ' pag-hidden' : ''}`}
+          style={`--i: ${i}`}
+          data-category={product.category}
+        >
           <ProductCard product={product} />
         </div>
       ))}
@@ -110,6 +127,14 @@ const categories = ['Todos', 'Animales', 'Navidad', 'Anime', 'Superhéroes', 'Ca
     <p id="catalogo-empty" class="text-center mt-10 hidden" style="color:#827376;">
       No hay productos en esta categoría todavía.
     </p>
+
+    <!-- Paginación -->
+    <nav
+      id="catalogo-paginacion"
+      class="hidden flex-wrap items-center justify-center gap-2 mt-12"
+      aria-label="Paginación del catálogo"
+    ></nav>
+    <p id="catalogo-contador" class="text-center mt-4" style="color:#827376; font-size:0.85rem;"></p>
   </section>
 
   <!-- ══════════════════════════ PASOS ══════════════════════════ -->
@@ -192,29 +217,97 @@ const categories = ['Todos', 'Animales', 'Navidad', 'Anime', 'Superhéroes', 'Ca
 </BaseLayout>
 
 <script>
+  const PER_PAGE = 8;
+
   const filterButtons = document.querySelectorAll<HTMLButtonElement>('#category-filters button');
-  const items = document.querySelectorAll<HTMLElement>('#catalogo-grid .catalog-item');
+  const allItems = Array.from(document.querySelectorAll<HTMLElement>('#catalogo-grid .catalog-item'));
   const emptyMsg = document.getElementById('catalogo-empty');
+  const pagination = document.getElementById('catalogo-paginacion');
+  const counter = document.getElementById('catalogo-contador');
+  const catalog = document.getElementById('catalogo');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let currentCategory = 'Todos';
+  let currentPage = 1;
+
+  const matching = () =>
+    allItems.filter(el => currentCategory === 'Todos' || el.dataset.category === currentCategory);
+
+  function buildPagination(totalPages: number) {
+    if (!pagination) return;
+    pagination.innerHTML = '';
+    pagination.classList.toggle('hidden', totalPages <= 1);
+    pagination.classList.toggle('flex', totalPages > 1);
+    if (totalPages <= 1) return;
+
+    function mkBtn(text: string, page: number, opts: { disabled?: boolean; current?: boolean; icon?: string } = {}) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'pag-btn';
+      if (opts.icon) {
+        btn.innerHTML = `<span class="material-symbols-outlined" style="font-size:18px;">${opts.icon}</span>`;
+        btn.setAttribute('aria-label', opts.icon === 'chevron_left' ? 'Página anterior' : 'Página siguiente');
+      } else {
+        btn.textContent = text;
+      }
+      if (opts.current) btn.setAttribute('aria-current', 'page');
+      btn.disabled = Boolean(opts.disabled);
+      if (!opts.disabled && !opts.current) {
+        btn.addEventListener('click', () => {
+          currentPage = page;
+          render(true);
+        });
+      }
+      return btn;
+    }
+
+    pagination.append(mkBtn('', currentPage - 1, { disabled: currentPage === 1, icon: 'chevron_left' }));
+    for (let p = 1; p <= totalPages; p++) {
+      pagination.append(mkBtn(String(p), p, { current: p === currentPage }));
+    }
+    pagination.append(mkBtn('', currentPage + 1, { disabled: currentPage === totalPages, icon: 'chevron_right' }));
+  }
+
+  function render(scrollToCatalog = false) {
+    const list = matching();
+    const totalPages = Math.max(1, Math.ceil(list.length / PER_PAGE));
+    currentPage = Math.min(Math.max(1, currentPage), totalPages);
+
+    const start = (currentPage - 1) * PER_PAGE;
+    const visible = new Set(list.slice(start, start + PER_PAGE));
+
+    allItems.forEach(el => el.classList.toggle('pag-hidden', !visible.has(el)));
+    emptyMsg?.classList.toggle('hidden', list.length > 0);
+
+    if (counter) {
+      const from = list.length === 0 ? 0 : start + 1;
+      const to = Math.min(start + PER_PAGE, list.length);
+      counter.textContent = `Mostrando ${from}–${to} de ${list.length} amigurumis`;
+    }
+
+    buildPagination(totalPages);
+
+    if (scrollToCatalog && catalog) {
+      catalog.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+    }
+  }
 
   filterButtons.forEach(btn => {
     btn.addEventListener('click', () => {
-      const category = btn.dataset.category ?? 'Todos';
+      currentCategory = btn.dataset.category ?? 'Todos';
+      currentPage = 1;
 
       filterButtons.forEach(b => {
-        b.classList.toggle('chip-active', b === btn);
-        b.classList.toggle('chip-inactive', b !== btn);
+        const active = b === btn;
+        b.classList.toggle('chip-active', active);
+        b.classList.toggle('chip-inactive', !active);
       });
 
-      let visibleCount = 0;
-      items.forEach(item => {
-        const show = category === 'Todos' || item.dataset.category === category;
-        item.style.display = show ? '' : 'none';
-        if (show) visibleCount++;
-      });
-
-      emptyMsg?.classList.toggle('hidden', visibleCount > 0);
+      render();
     });
   });
+
+  render();
 
   /* ── Entrada escalonada de categorías + tarjetas ─────── */
   const catalogSection = document.getElementById('catalogo');
@@ -331,3 +424,53 @@ const categories = ['Todos', 'Animales', 'Navidad', 'Anime', 'Superhéroes', 'Ca
     }
   }
 </script>
+
+<style is:global>
+  /* ── Catálogo paginado ───────────────────────────────── */
+  .pag-hidden { display: none !important; }
+
+  #catalogo { scroll-margin-top: 96px; }
+
+  .pag-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    padding: 0 0.75rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(212, 194, 197, 0.65);
+    background: #ffffff;
+    color: #504446;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 160ms ease, border-color 160ms ease,
+                color 160ms ease, transform 160ms ease;
+  }
+  .pag-btn:hover:not(:disabled):not([aria-current='page']) {
+    border-color: #704653;
+    color: #704653;
+    transform: translateY(-1px);
+  }
+  .pag-btn[aria-current='page'] {
+    background: #704653;
+    border-color: #704653;
+    color: #ffffff;
+    cursor: default;
+  }
+  .pag-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+  .pag-btn:focus-visible {
+    outline: 2px solid #704653;
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pag-btn { transition: none; }
+  }
+</style>
